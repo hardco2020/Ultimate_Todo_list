@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Todolist = void 0;
 const core_1 = require("@mikro-orm/core");
+const type_graphql_1 = require("type-graphql");
 let Todolist = class Todolist {
     constructor() {
         this.createdAt = new Date();
@@ -18,22 +19,27 @@ let Todolist = class Todolist {
     }
 };
 __decorate([
+    type_graphql_1.Field(),
     core_1.PrimaryKey(),
     __metadata("design:type", Number)
 ], Todolist.prototype, "id", void 0);
 __decorate([
+    type_graphql_1.Field(() => String),
     core_1.Property({ type: 'date' }),
     __metadata("design:type", Object)
 ], Todolist.prototype, "createdAt", void 0);
 __decorate([
+    type_graphql_1.Field(() => String),
     core_1.Property({ type: 'date', onUpdate: () => new Date() }),
     __metadata("design:type", Object)
 ], Todolist.prototype, "updatedAt", void 0);
 __decorate([
+    type_graphql_1.Field(),
     core_1.Property({ type: 'text' }),
     __metadata("design:type", String)
 ], Todolist.prototype, "title", void 0);
 Todolist = __decorate([
+    type_graphql_1.ObjectType(),
     core_1.Entity()
 ], Todolist);
 exports.Todolist = Todolist;
