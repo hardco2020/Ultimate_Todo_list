@@ -6,12 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const constants_1 = require("./constants");
 const Todolist_1 = require("./entities/Todolist");
 const path_1 = __importDefault(require("path"));
+const User_1 = require("./entities/User");
 const config = {
     migrations: {
         path: path_1.default.join(__dirname, './migrations'),
         pattern: /^[\w-]+\d+\.[tj]s$/,
     },
-    entities: [Todolist_1.Todolist],
+    entities: [Todolist_1.Todo, User_1.User],
     dbName: 'todolist',
     type: 'postgresql',
     debug: !constants_1.__prod__,

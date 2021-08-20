@@ -1,40 +1,40 @@
-import { Todolist } from "../entities/Todolist";
+import { Todo } from "../entities/Todolist";
 import { MyContext } from "../type";
-import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 
 @Resolver()
 export class TodoResolver{
-    @Query( ()=> [Todolist] ) //typescript style
-    todos( @Ctx() {em}: MyContext):Promise<Todolist[]> {
-        return em.find(Todolist,{});
+    @Query( ()=> [Todo] ) //typescript style
+    todos( @Ctx() {em}: MyContext):Promise<Todo[]> {
+        return em.find(Todo,{});
     }
 
-    @Query( ()=> Todolist, { nullable:true } ) //typescript style
+    @Query( ()=> Todo, { nullable:true } ) //typescript style
     todo(  
         //the former id is for naming in server
         //the latter id is for using in 18 row for syntax
         @Arg('id') id: number, 
-        @Ctx() {em}: MyContext):Promise<Todolist|null> {
-        return em.findOne(Todolist,{ id });
+        @Ctx() {em}: MyContext):Promise<Todo|null> {
+        return em.findOne(Todo,{ id });
     }
     // Query is for searching
     // Mutation is for updating inserting deleting
-    @Mutation( ()=> Todolist) //typescript style
+    @Mutation( ()=> Todo) //typescript style
     async createTodo(  
         @Arg('title') title: string, 
-        @Ctx() {em}: MyContext):Promise<Todolist> {
-        const todo = em.create(Todolist,{title});
+        @Ctx() {em}: MyContext):Promise<Todo> {
+        const todo = em.create(Todo,{title});
         await em.persistAndFlush(todo);
         return todo;
     }
 
-    @Mutation( ()=> Todolist,{nullable:true}) //typescript style
+    @Mutation( ()=> Todo,{nullable:true}) //typescript style
     async updateTodo(  
         @Arg('id') id: number,
         @Arg('title',()=>String,{nullable:true}) title: string, 
         @Ctx() {em}: MyContext
-    ):Promise<Todolist | null> {
-            const todo = await em.findOne(Todolist,{id});
+    ):Promise<Todo | null> {
+            const todo = await em.findOne(Todo,{id});
             if(!todo){
                 return null;
             }
@@ -51,7 +51,7 @@ export class TodoResolver{
         @Ctx() {em}: MyContext
     ):Promise<boolean> {
             try{
-                await em.nativeDelete(Todolist,{ id });
+                await em.nativeDelete(Todo,{ id });
                 return true;
             }catch(err){
                 return false; //try catch does'nt really work here since I can't get wrong message inside nativeDelete

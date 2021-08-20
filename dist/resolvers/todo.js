@@ -17,18 +17,18 @@ const Todolist_1 = require("../entities/Todolist");
 const type_graphql_1 = require("type-graphql");
 let TodoResolver = class TodoResolver {
     todos({ em }) {
-        return em.find(Todolist_1.Todolist, {});
+        return em.find(Todolist_1.Todo, {});
     }
     todo(id, { em }) {
-        return em.findOne(Todolist_1.Todolist, { id });
+        return em.findOne(Todolist_1.Todo, { id });
     }
     async createTodo(title, { em }) {
-        const todo = em.create(Todolist_1.Todolist, { title });
+        const todo = em.create(Todolist_1.Todo, { title });
         await em.persistAndFlush(todo);
         return todo;
     }
     async updateTodo(id, title, { em }) {
-        const todo = await em.findOne(Todolist_1.Todolist, { id });
+        const todo = await em.findOne(Todolist_1.Todo, { id });
         if (!todo) {
             return null;
         }
@@ -40,7 +40,7 @@ let TodoResolver = class TodoResolver {
     }
     async deleteTodo(id, { em }) {
         try {
-            await em.nativeDelete(Todolist_1.Todolist, { id });
+            await em.nativeDelete(Todolist_1.Todo, { id });
             return true;
         }
         catch (err) {
@@ -49,14 +49,14 @@ let TodoResolver = class TodoResolver {
     }
 };
 __decorate([
-    type_graphql_1.Query(() => [Todolist_1.Todolist]),
+    type_graphql_1.Query(() => [Todolist_1.Todo]),
     __param(0, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "todos", null);
 __decorate([
-    type_graphql_1.Query(() => Todolist_1.Todolist, { nullable: true }),
+    type_graphql_1.Query(() => Todolist_1.Todo, { nullable: true }),
     __param(0, type_graphql_1.Arg('id')),
     __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
@@ -64,7 +64,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "todo", null);
 __decorate([
-    type_graphql_1.Mutation(() => Todolist_1.Todolist),
+    type_graphql_1.Mutation(() => Todolist_1.Todo),
     __param(0, type_graphql_1.Arg('title')),
     __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
@@ -72,7 +72,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TodoResolver.prototype, "createTodo", null);
 __decorate([
-    type_graphql_1.Mutation(() => Todolist_1.Todolist, { nullable: true }),
+    type_graphql_1.Mutation(() => Todolist_1.Todo, { nullable: true }),
     __param(0, type_graphql_1.Arg('id')),
     __param(1, type_graphql_1.Arg('title', () => String, { nullable: true })),
     __param(2, type_graphql_1.Ctx()),
