@@ -1,7 +1,15 @@
 import { User } from "../entities/User";
 import { MyContext } from "../type";
-import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Resolver } from "type-graphql";
+import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import argon2 from "argon2";
+
+// export {};
+// declare module Express {
+//     export interface Session {
+//       userId: number ;
+//     }
+// }
+
 
 @InputType()
 class UsernamePasswordInput{
@@ -29,6 +37,17 @@ class UserResponse{
 
 @Resolver()
 export class UserResolver{  
+    @Query(()=>User,{nullable:true})
+    async me(
+        @Ctx() { req,em }:MyContext
+    ){
+        //console.log(req.session.userId)
+        if(!req.session.userId){
+            return null
+        }
+        const user = await em.findOne(User,{id: req.session.userId});
+        return user;
+    }
     @Mutation( ()=> UserResponse ) //typescript style
     async register(
         @Arg('options') options:UsernamePasswordInput,
@@ -77,9 +96,9 @@ export class UserResolver{
     @Mutation( ()=> UserResponse ) //typescript style
     async login(
         @Arg('options') options:UsernamePasswordInput,
-        @Ctx() {em} : MyContext
+        @Ctx() { em , req } : MyContext
     ):Promise<UserResponse>{
-        try{
+        try{   
             const user = await em.findOneOrFail(User,{ username:options.username })
             const valid = await argon2.verify(user.password,options.password)
             if(!valid){
@@ -90,6 +109,9 @@ export class UserResolver{
                     }]
                 }
             }
+            //store user id session 
+            //keep user logged in
+            req.session.userId = user.id
             return {
                 user
             };
