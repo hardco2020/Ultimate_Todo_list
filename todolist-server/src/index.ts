@@ -1,6 +1,6 @@
 import "reflect-metadata"
 import { MikroORM }  from '@mikro-orm/core';
-import { __prod__ } from './constants';
+import { COOKIE_NAME, __prod__ } from './constants';
 //import { Todolist } from './entities/Todolist';
 import microConfig from './mikro-orm.config';
 import express from 'express'
@@ -13,12 +13,9 @@ import redis from 'redis';
 import session from 'express-session';
 import connectRedis from 'connect-redis'
 import { MyContext } from "./type";
-import cors from 'cors'
 import { Request , Response } from "express";
 import fs from 'fs';
 import https from 'https';
-import { fstat } from "node:fs";
-
 const main = async()=>{
     
     //connect to the database
@@ -35,7 +32,7 @@ const main = async()=>{
 
     const corsOptions = {
         credentials:true,
-        origin: 'https://studio.apollographql.com'
+        origin: ['https://studio.apollographql.com','http://localhost:3000']
     };
 
     const options = {
@@ -50,7 +47,7 @@ const main = async()=>{
     })
     app.use(
         session({
-            name: 'qid',
+            name: COOKIE_NAME,
             store: new RedisStore({  //ttl: how long it should last
                 client: redisClient, 
                 //disableTTL :true, //make sure session last forever
@@ -81,6 +78,10 @@ const main = async()=>{
     });    
     await apolloServer.start();
     apolloServer.applyMiddleware({app,cors:corsOptions}); // if I want to apply cors, I have to go through here
+    // app.listen(4000,()=>{
+    //     console.log('server stared on localhost:4000')
+    // }) 
+    //with SSL 
     https.createServer(options,app).listen(4000,()=>{
         console.log('server stared on localhost:4000')
     })

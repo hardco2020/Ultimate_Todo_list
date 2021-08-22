@@ -2,10 +2,13 @@ import { Todo } from "../entities/Todolist";
 import { MyContext } from "../type";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 
+const sleep = (ms:number)=> new Promise((res)=>setTimeout(res,ms))
+
 @Resolver()
 export class TodoResolver{
     @Query( ()=> [Todo] ) //typescript style
-    todos( @Ctx() {em}: MyContext):Promise<Todo[]> {
+    async todos( @Ctx() {em}: MyContext):Promise<Todo[]> {
+        await sleep(3000)
         return em.find(Todo,{});
     }
 

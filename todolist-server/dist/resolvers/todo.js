@@ -15,8 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TodoResolver = void 0;
 const Todolist_1 = require("../entities/Todolist");
 const type_graphql_1 = require("type-graphql");
+const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 let TodoResolver = class TodoResolver {
-    todos({ em }) {
+    async todos({ em }) {
+        await sleep(3000);
         return em.find(Todolist_1.Todo, {});
     }
     todo(id, { em }) {

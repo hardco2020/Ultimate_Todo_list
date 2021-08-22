@@ -2,6 +2,8 @@ import { User } from "../entities/User";
 import { MyContext } from "../type";
 import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import argon2 from "argon2";
+import { COOKIE_NAME } from "../constants";
+import path from "path/posix";
 
 // export {};
 // declare module Express {
@@ -9,7 +11,6 @@ import argon2 from "argon2";
 //       userId: number ;
 //     }
 // }
-
 
 @InputType()
 class UsernamePasswordInput{
@@ -51,7 +52,7 @@ export class UserResolver{
     @Mutation( ()=> UserResponse ) //typescript style
     async register(
         @Arg('options') options:UsernamePasswordInput,
-        @Ctx() {em} : MyContext
+        @Ctx() {em,req} : MyContext
     ):Promise<UserResponse>{
         if(options.username.length<=2){
             return{
@@ -90,6 +91,9 @@ export class UserResolver{
                 }
             }
         }
+
+        req.session.userId = user.id
+
         return {user};
     }
 
@@ -124,6 +128,26 @@ export class UserResolver{
                     }]
             }
         }
+    }
+    @Mutation(()=>Boolean)
+    logout(
+        @Ctx() { req,res }: MyContext
+    ){
+        try{
+            res.clearCookie("qid")
+        }catch(err){
+            console.log(err)
+        }
+        return new Promise((resolve)=> req.session.destroy(err=>{
+            //console.log(res.cookie)
+            if(err){
+                console.log(err)
+                resolve(false)
+                return 
+            }
+            resolve(true)
+            })
+        );
     }
     
 

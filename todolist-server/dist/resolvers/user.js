@@ -66,7 +66,7 @@ let UserResolver = class UserResolver {
         const user = await em.findOne(User_1.User, { id: req.session.userId });
         return user;
     }
-    async register(options, { em }) {
+    async register(options, { em, req }) {
         if (options.username.length <= 2) {
             return {
                 errors: [{
@@ -103,6 +103,7 @@ let UserResolver = class UserResolver {
                 };
             }
         }
+        req.session.userId = user.id;
         return { user };
     }
     async login(options, { em, req }) {
@@ -131,6 +132,22 @@ let UserResolver = class UserResolver {
             };
         }
     }
+    logout({ req, res }) {
+        try {
+            res.clearCookie("qid");
+        }
+        catch (err) {
+            console.log(err);
+        }
+        return new Promise((resolve) => req.session.destroy(err => {
+            if (err) {
+                console.log(err);
+                resolve(false);
+                return;
+            }
+            resolve(true);
+        }));
+    }
 };
 __decorate([
     type_graphql_1.Query(() => User_1.User, { nullable: true }),
@@ -155,6 +172,13 @@ __decorate([
     __metadata("design:paramtypes", [UsernamePasswordInput, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "login", null);
+__decorate([
+    type_graphql_1.Mutation(() => Boolean),
+    __param(0, type_graphql_1.Ctx()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], UserResolver.prototype, "logout", null);
 UserResolver = __decorate([
     type_graphql_1.Resolver()
 ], UserResolver);

@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const core_1 = require("@mikro-orm/core");
+const constants_1 = require("./constants");
 const mikro_orm_config_1 = __importDefault(require("./mikro-orm.config"));
 const express_1 = __importDefault(require("express"));
 const apollo_server_express_1 = require("apollo-server-express");
@@ -23,7 +24,7 @@ const main = async () => {
     const app = express_1.default();
     const corsOptions = {
         credentials: true,
-        origin: 'https://studio.apollographql.com'
+        origin: ['https://studio.apollographql.com', 'http://localhost:3000']
     };
     const options = {
         key: fs_1.default.readFileSync('/Users/kai/Documents/SideProject/Ultimate_Todo_list/todolist-server/localhost-key.pem'),
@@ -35,7 +36,7 @@ const main = async () => {
         host: 'localhost'
     });
     app.use(express_session_1.default({
-        name: 'qid',
+        name: constants_1.COOKIE_NAME,
         store: new RedisStore({
             client: redisClient,
         }),

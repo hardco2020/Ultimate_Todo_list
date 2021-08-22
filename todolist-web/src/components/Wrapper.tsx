@@ -2,7 +2,7 @@ import { Box } from '@chakra-ui/react';
 import React from 'react'
 
 interface wrapperProps {
-    variant?: "small"| "regular"
+    variant?: "small"| "regular" // to specify what would be passed into components and it's attribute
 }
 
 export const Wrapper: React.FC<wrapperProps> = ({
